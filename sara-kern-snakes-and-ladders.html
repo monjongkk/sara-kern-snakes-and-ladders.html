@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>บันไดงูมหาสนุก ตะลุยโลกสระเกิน</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+/* ===== ตัวแปรสีและพื้นฐาน ===== */
+:root{
+  --blue:#4fc3f7; --pink:#ff6b9d; --yellow:#ffd54f; --purple:#8e6cf0; --green:#66bb6a;
+  --ink:#2d2a4a; --white:#ffffff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none !important}
+body{
+  font-family:'Sarabun','Leelawadee UI','Tahoma',sans-serif;
+  color:var(--ink);
+  min-height:100vh;
+  background:linear-gradient(180deg,#8ee4ff 0%,#c9f1ff 50%,#fff6c9 100%);
+  overflow-x:hidden;
+}
+/* ฉากหลังตกแต่ง: เมฆและดาวลอยไปมา */
+.deco{position:fixed;pointer-events:none;opacity:.75;animation:float 6s ease-in-out infinite;z-index:0;user-select:none}
+.deco.d1{top:6%;left:3%;font-size:46px}
+.deco.d2{top:14%;right:6%;font-size:58px;animation-delay:1s}
+.deco.d3{bottom:12%;left:5%;font-size:40px;animation-delay:2s}
+.deco.d4{bottom:8%;right:4%;font-size:50px;animation-delay:.5s}
+.deco.d5{top:45%;left:48%;font-size:28px;animation-delay:1.5s}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+
+/* ===== หน้าจอ ===== */
+#app{position:relative;z-index:1;min-height:100vh}
+.screen{display:none;min-height:100vh;padding:24px 16px;align-items:center;justify-content:center;flex-direction:column}
+.screen.active{display:flex}
+
+/* ===== ปุ่ม ===== */
+.btn{
+  border:none;border-radius:999px;padding:12px 22px;font:inherit;font-weight:800;font-size:17px;
+  cursor:pointer;color:#fff;box-shadow:0 5px 0 rgba(0,0,0,.18);transition:transform .08s,box-shadow .08s,opacity .2s;
+  white-space:nowrap;
+}
+.btn:hover{filter:brightness(1.05)}
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.18)}
+.btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:0 5px 0 rgba(0,0,0,.1)}
+.btn.big{font-size:21px;padding:14px 28px;min-width:230px}
+.btn.small{font-size:15px;padding:9px 14px}
+.btn.pink{background:var(--pink)}
+.btn.blue{background:var(--blue);color:#0d3b57}
+.btn.yellow{background:var(--yellow);color:#5a4300}
+.btn.green{background:var(--green)}
+.btn.purple{background:var(--purple)}
+.btn.ghost{background:#fff;color:var(--ink)}
+.row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:center}
+
+/* ===== ใบการ์ด ===== */
+.card{background:rgba(255,255,255,.92);border-radius:24px;padding:22px;box-shadow:0 10px 30px rgba(60,80,140,.18)}
+
+/* ===== หน้าแรก ===== */
+.hero{text-align:center;max-width:640px;width:100%}
+.title{font-size:clamp(34px,7vw,64px);font-weight:800;color:#ff4f8b;text-shadow:3px 3px 0 #fff,6px 6px 0 #ffd54f;line-height:1.2}
+.subtitle{font-size:clamp(24px,5vw,40px);font-weight:800;color:#6c4fd6;margin-top:6px;text-shadow:2px 2px 0 #fff}
+.tagline{font-size:20px;margin:14px 0 4px;font-weight:700}
+.hero-art{font-size:clamp(40px,8vw,64px);letter-spacing:10px;margin:14px 0 24px;animation:bounce 2.4s ease-in-out infinite}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.menu{display:flex;flex-direction:column;gap:14px;align-items:center}
+
+/* ===== หน้าตั้งค่าผู้เล่น ===== */
+.setup-card{max-width:560px;width:100%;text-align:center}
+.setup-card h2{font-size:30px;color:#6c4fd6;margin-bottom:6px}
+.setup-card p{margin-bottom:14px;font-weight:700}
+.count-row{display:flex;gap:10px;justify-content:center;margin-bottom:16px;flex-wrap:wrap}
+.cnt{border:3px solid #cfc3ff;background:#fff;border-radius:16px;padding:10px 18px;font:inherit;font-weight:800;font-size:18px;cursor:pointer;color:var(--ink)}
+.cnt.on{background:var(--purple);color:#fff;border-color:var(--purple)}
+.name-inputs{display:grid;gap:10px;margin-bottom:20px}
+.name-field{display:flex;align-items:center;gap:10px;background:#f6f3ff;border-radius:16px;padding:8px 12px;border:2px solid #e2d9ff}
+.name-field .av{font-size:26px;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;border:2px solid #fff}
+.name-field input{flex:1;border:none;background:transparent;font:inherit;font-size:18px;font-weight:700;color:var(--ink);outline:none;min-width:0}
+
+/* ===== หน้าความรู้ ===== */
+.know-wrap{max-width:980px;width:100%}
+.page-title{font-size:clamp(26px,5vw,38px);text-align:center;color:#6c4fd6;margin-bottom:18px;text-shadow:2px 2px 0 #fff}
+.know-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-bottom:22px}
+.kcard{border-radius:24px;padding:20px;color:var(--ink);box-shadow:0 8px 20px rgba(60,80,140,.18)}
+.kcard h3{font-size:22px;margin-bottom:8px}
+.kcard p{font-size:17px;line-height:1.6}
+.kcard.c1{background:#cdeeff}
+.kcard.c2{background:#ffdcec}
+.kcard.c3{background:#fff3b0}
+.kcard.c4{background:#e6dbff}
+.kcard.c5{background:#d6f5cf}
+.kcard.c6{background:#ffe6c7}
+table.sara{width:100%;border-collapse:collapse;margin-top:8px;background:#fff;border-radius:14px;overflow:hidden}
+table.sara th,table.sara td{padding:8px;text-align:center;font-size:17px;border-bottom:1px solid #eee}
+table.sara th{background:#8e6cf0;color:#fff}
+.sara-glyph{font-size:30px;font-weight:800;color:#ff4f8b}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.chip{background:#fff;border-radius:999px;padding:6px 12px;font-weight:700;font-size:17px}
+
+/* ===== หน้าเกม ===== */
+.game-layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:18px;width:100%;max-width:1100px;align-items:start}
+.board-area{display:flex;justify-content:center}
+.board-wrap{
+  position:relative;width:min(92vw,620px);aspect-ratio:1/1;border-radius:22px;overflow:hidden;
+  background:#fff;border:6px solid #fff;box-shadow:0 14px 34px rgba(60,80,140,.28);
+}
+.board{position:absolute;inset:0;display:grid;grid-template-columns:repeat(10,1fr);grid-template-rows:repeat(10,1fr);z-index:1}
+.cell{position:relative;border:1px solid rgba(255,255,255,.85);font-size:clamp(10px,1.5vw,14px);font-weight:800;color:#4a4670}
+.cell .num{position:absolute;left:3px;top:0}
+.cell .tag{position:absolute;right:2px;bottom:0;font-size:clamp(10px,1.6vw,16px)}
+.overlay{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}
+.tokens{position:absolute;inset:0;pointer-events:none;z-index:3}
+.token{
+  position:absolute;width:4.2%;aspect-ratio:1/1;border-radius:50%;display:grid;place-items:center;
+  font-size:clamp(12px,2.2vw,20px);border:2px solid #fff;box-shadow:0 3px 6px rgba(0,0,0,.3);
+  transition:left .28s ease,top .28s ease;
+}
+
+.side{display:flex;flex-direction:column;gap:14px}
+.turn-card{text-align:center}
+.turn-label{font-weight:700;color:#6c6a8a}
+.turn-name{font-size:26px;font-weight:800;margin:4px 0 12px;color:#6c4fd6}
+.dice-area{display:flex;justify-content:center;margin-bottom:12px}
+.dice{
+  width:96px;height:96px;background:#fff;border-radius:20px;padding:12px;
+  display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);gap:4px;
+  box-shadow:inset 0 -4px 0 #e5e0f5,0 8px 16px rgba(0,0,0,.2);border:2px solid #eee;
+}
+.pip{border-radius:50%;background:transparent}
+.pip.on{background:#ff4d7d;box-shadow:inset -2px -2px 0 rgba(0,0,0,.2)}
+.turn-hint{margin-top:10px;font-size:16px;font-weight:700;color:#6c6a8a;min-height:24px}
+.side h3{font-size:20px;margin-bottom:10px;color:#6c4fd6}
+.score-list{list-style:none;display:grid;gap:8px}
+.score-item{display:grid;grid-template-columns:auto auto 1fr auto;gap:8px;align-items:center;background:#f6f3ff;border-radius:14px;padding:8px 10px;border-left:6px solid #ccc}
+.score-item .rank{font-weight:800;font-size:18px;width:26px;text-align:center}
+.score-item .av{font-size:20px}
+.score-item .nm{font-weight:800;font-size:17px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.score-item .det{font-size:13px;color:#5f5a80}
+.score-item .pts{font-weight:800;color:#c2185b;font-size:16px;text-align:right}
+.score-item.active{background:#fff3c4;box-shadow:0 0 0 2px #ffd54f}
+
+/* ===== ข้อความแจ้งเตือนกลางจอ ===== */
+.banner{
+  position:fixed;left:50%;top:18%;transform:translate(-50%,-50%) scale(.9);z-index:200;
+  background:#fff;border-radius:22px;padding:16px 26px;font-size:clamp(18px,3.5vw,26px);font-weight:800;
+  box-shadow:0 14px 34px rgba(0,0,0,.25);opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;
+  text-align:center;max-width:92vw;
+}
+.banner.show{opacity:1;transform:translate(-50%,-50%) scale(1)}
+.banner.up{border:4px solid var(--green);color:#2e7d32}
+.banner.down{border:4px solid var(--pink);color:#c2185b}
+
+/* ===== โมดัล ===== */
+.modal{position:fixed;inset:0;background:rgba(40,30,80,.5);display:grid;place-items:center;z-index:100;padding:16px}
+.modal-card{background:#fff;border-radius:26px;max-width:620px;width:100%;padding:24px;box-shadow:0 20px 50px rgba(0,0,0,.3);max-height:92vh;overflow:auto;position:relative}
+.q-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.badge{padding:6px 14px;border-radius:999px;font-weight:800;font-size:15px;color:#fff}
+.badge.l0{background:var(--green)}
+.badge.l1{background:var(--blue);color:#0d3b57}
+.badge.l2{background:var(--pink)}
+.q-player{font-weight:800;color:#6c4fd6;font-size:17px}
+.q-text{font-size:clamp(19px,3vw,23px);font-weight:700;line-height:1.6;margin-bottom:16px;white-space:pre-line}
+.choices{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.choice{
+  background:#f4f1ff;border:3px solid #d9d0ff;border-radius:16px;padding:12px 14px;font:inherit;font-size:18px;
+  font-weight:700;cursor:pointer;text-align:left;color:var(--ink);transition:transform .08s;
+}
+.choice:hover:not(:disabled){transform:translateY(-2px);background:#ece6ff}
+.choice:disabled{cursor:default}
+.choice .lab{display:inline-block;min-width:26px;color:#6c4fd6;font-weight:800}
+.choice.right{background:#d6f5cf;border-color:var(--green)}
+.choice.wrong{background:#ffd9e4;border-color:var(--pink)}
+.feedback{margin-top:16px;text-align:center;background:#fbf9ff;border-radius:18px;padding:16px;border:2px dashed #cfc3ff}
+.fb-title{font-size:24px;font-weight:800;margin-bottom:8px}
+.fb-title.good{color:#2e7d32}
+.fb-title.bad{color:#c2185b}
+.fb-exp{font-size:17px;line-height:1.7;margin-bottom:14px;white-space:pre-line;text-align:left}
+.close-x{position:absolute;top:10px;right:14px;border:none;background:transparent;font-size:26px;cursor:pointer;color:#888}
+
+.how-list{padding-left:0;list-style:none;display:grid;gap:10px;font-size:18px;line-height:1.6}
+.how-list li{background:#f6f3ff;border-radius:14px;padding:10px 14px}
+.how-list b{color:#6c4fd6}
+
+/* ===== หน้าชนะ ===== */
+.win-card{max-width:560px;width:100%;text-align:center}
+.trophy{font-size:80px;animation:bounce 1.6s ease-in-out infinite}
+.win-title{font-size:clamp(24px,4.5vw,34px);color:#ff4f8b;margin:8px 0;text-shadow:2px 2px 0 #fff}
+.win-name{font-size:22px;font-weight:800;margin-bottom:14px;color:#6c4fd6}
+.win-card .score-list{margin:16px 0 22px;text-align:left}
+
+/* ===== เอฟเฟกต์ ===== */
+#fx{position:fixed;inset:0;pointer-events:none;z-index:300;overflow:hidden}
+.conf{position:absolute;top:-20px;width:10px;height:16px;border-radius:3px;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+.spark{position:absolute;font-size:28px;animation:pop 1s ease-out forwards}
+@keyframes pop{0%{transform:scale(.2) rotate(0);opacity:1}100%{transform:scale(1.4) rotate(160deg) translateY(-40px);opacity:0}}
+
+#toast{
+  position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:#2d2a4a;color:#fff;
+  padding:10px 18px;border-radius:14px;font-weight:700;z-index:250;opacity:0;transition:opacity .3s;pointer-events:none;
+}
+#toast.show{opacity:1}
+
+/* ===== ปรับขนาดสำหรับแท็บเล็ตและมือถือ ===== */
+@media (max-width:860px){
+  .game-layout{grid-template-columns:1fr;justify-items:center}
+  .side{width:min(92vw,620px)}
+  .turn-card{display:grid;grid-template-columns:auto 1fr;gap:12px;text-align:left;align-items:center}
+  .turn-card .dice-area{margin:0}
+  .turn-card .turn-hint,.turn-card .btn{grid-column:auto}
+}
+@media (max-width:560px){
+  .choices{grid-template-columns:1fr}
+  .btn.big{min-width:0;width:100%}
+  .turn-card{grid-template-columns:1fr;text-align:center}
+  .turn-card .dice-area{justify-content:center}
+}
+</style>
+</head>
+<body>
+
+<!-- ฉากหลังตกแต่ง -->
+<div class="deco d1">☁️</div>
+<div class="deco d2">🌈</div>
+<div class="deco d3">⭐</div>
+<div class="deco d4">🌳</div>
+<div class="deco d5">✨</div>
+
+<div id="app">
+
+  <!-- ===== หน้าแรก ===== -->
+  <section id="screen-start" class="screen active">
+    <div class="hero">
+      <h1 class="title">บันไดงูมหาสนุก</h1>
+      <h2 class="subtitle">ตะลุยโลกสระเกิน</h2>
+      <p class="tagline">เรียนรู้ภาษาไทยไปกับครูจองซ่า</p>
+      <div class="hero-art">🐍 🪜 🎲 🧒</div>
+      <div class="menu">
+        <button class="btn big pink" id="btnPlay">▶ เริ่มเล่นเกม</button>
+        <button class="btn big blue" id="btnHowStart">📖 วิธีเล่น</button>
+        <button class="btn big yellow" id="btnKnowStart">💡 ความรู้เรื่องสระเกิน</button>
+        <button class="btn big green" id="btnSoundStart">🔊 เสียง: เปิด</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ตั้งค่าผู้เล่น ===== -->
+  <section id="screen-setup" class="screen">
+    <div class="card setup-card">
+      <h2>ตั้งค่าผู้เล่น</h2>
+      <p>เลือกจำนวนผู้เล่น 2–4 คน แล้วกรอกชื่อ</p>
+      <div class="count-row" id="countRow">
+        <button class="cnt" data-n="2">2 คน</button>
+        <button class="cnt on" data-n="3">3 คน</button>
+        <button class="cnt" data-n="4">4 คน</button>
+      </div>
+      <div class="name-inputs" id="nameInputs"></div>
+      <div class="row">
+        <button class="btn ghost" id="btnSetupBack">⬅ กลับ</button>
+        <button class="btn big pink" id="btnStart">เริ่มเกม ▶</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ความรู้เรื่องสระเกิน ===== -->
+  <section id="screen-know" class="screen">
+    <div class="know-wrap">
+      <h2 class="page-title">💡 ความรู้เรื่องสระเกิน</h2>
+      <div class="know-grid">
+        <div class="kcard c1">
+          <h3>🌟 สระเกินคืออะไร?</h3>
+          <p>สระเกินคือกลุ่มรูปสระพิเศษ ที่พบไม่บ่อยในคำไทยทั่วไป มักพบในคำที่รับมาจากภาษาบาลีและสันสกฤต</p>
+        </div>
+        <div class="kcard c2">
+          <h3>🔤 สระเกิน 4 รูป</h3>
+          <table class="sara">
+            <tr><th>รูปสระ</th><th>ออกเสียงในปัจจุบัน</th></tr>
+            <tr><td class="sara-glyph">ฤ</td><td>รึ</td></tr>
+            <tr><td class="sara-glyph">ฤๅ</td><td>รือ</td></tr>
+            <tr><td class="sara-glyph">ฦ</td><td>ลึ</td></tr>
+            <tr><td class="sara-glyph">ฦๅ</td><td>ลือ</td></tr>
+          </table>
+        </div>
+        <div class="kcard c3">
+          <h3>📝 ตัวอย่างคำ</h3>
+          <div class="chips">
+            <span class="chip">ฤดู (ฤ)</span>
+            <span class="chip">ฤทธิ์ (ฤ)</span>
+            <span class="chip">ฤกษ์ (ฤ)</span>
+            <span class="chip">กฤษณา (ฤ)</span>
+            <span class="chip">ฤๅษี (ฤๅ)</span>
+          </div>
+          <p style="margin-top:10px">สระ ฦ และ ฦๅ พบน้อยมาก ส่วนใหญ่พบในคำเก่า</p>
+        </div>
+        <div class="kcard c4">
+          <h3>👀 วิธีจำง่าย ๆ</h3>
+          <p>สังเกต <b>ๅ</b> (ไม้ไต่คู้) ที่อยู่ท้ายรูป ถ้ามี ๅ แสดงว่าเป็น <b>ฤๅ</b> หรือ <b>ฦๅ</b> ถ้าไม่มี ๅ แสดงว่าเป็น <b>ฤ</b> หรือ <b>ฦ</b></p>
+        </div>
+        <div class="kcard c5">
+          <h3>🧩 สระที่ไม่ใช่สระเกิน</h3>
+          <p>ะ &nbsp; า &nbsp; ิ &nbsp; ี &nbsp; ุ &nbsp; ู &nbsp; เ- &nbsp; แ- &nbsp; โ- &nbsp; ไ- &nbsp; ใ- ล้วนเป็นสระที่ใช้ทั่วไป ไม่ใช่สระเกิน</p>
+        </div>
+        <div class="kcard c6">
+          <h3>📌 หมายเหตุสำหรับครู</h3>
+          <p>การจัดกลุ่มสระเกินอาจแตกต่างกันตามตำรา เนื้อหานี้ใช้แนวทางที่พบได้ทั่วไปในระดับประถมศึกษา</p>
+        </div>
+      </div>
+      <div class="row">
+        <button class="btn big blue" id="btnKnowBack">⬅ กลับ</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== หน้าเกมหลัก ===== -->
+  <section id="screen-game" class="screen">
+    <div class="game-layout">
+      <div class="board-area">
+        <div class="board-wrap" id="boardWrap">
+          <div class="board" id="board"></div>
+          <svg class="overlay" id="overlay" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
+          <div class="tokens" id="tokens"></div>
+        </div>
+      </div>
+      <aside class="side">
+        <div class="card turn-card">
+          <div>
+            <div class="turn-label">ตาของ</div>
+            <div class="turn-name" id="turnName">-</div>
+            <div class="dice-area"><div class="dice" id="dice"></div></div>
+          </div>
+          <div>
+            <button class="btn big pink" id="btnRoll">🎲 ทอยลูกเต๋า</button>
+            <div class="turn-hint" id="turnHint">ทอยลูกเต๋าเพื่อเริ่มตอบคำถาม</div>
+          </div>
+        </div>
+        <div class="card">
+          <h3>🏆 ลำดับผู้เล่น</h3>
+          <ol class="score-list" id="scoreList"></ol>
+        </div>
+        <div class="row">
+          <button class="btn small blue" id="btnHowGame">📖 วิธีเล่น</button>
+          <button class="btn small yellow" id="btnKnowGame">💡 ความรู้</button>
+          <button class="btn small green" id="btnSoundGame">🔊 เสียง</button>
+          <button class="btn small ghost" id="btnNewGame">🔄 เริ่มเกมใหม่</button>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ===== หน้าสรุปผู้ชนะ ===== -->
+  <section id="screen-win" class="screen">
+    <div class="card win-card">
+      <div class="trophy">🏆</div>
+      <h2 class="win-title">ยินดีด้วย! คุณคือสุดยอดนักผจญภัยโลกสระเกิน</h2>
+      <p class="win-name" id="winName"></p>
+      <ol class="score-list" id="winList"></ol>
+      <div class="row">
+        <button class="btn big pink" id="btnPlayAgain">🔁 เล่นอีกครั้ง</button>
+        <button class="btn big blue" id="btnToStart">🏠 หน้าแรก</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ===== โมดัลคำถาม ===== -->
+<div class="modal" id="qModal" hidden>
+  <div class="modal-card">
+    <div class="q-head">
+      <span class="badge l0" id="qLevel">ง่าย</span>
+      <span class="q-player" id="qPlayer"></span>
+    </div>
+    <p class="q-text" id="qText"></p>
+    <div class="choices" id="qChoices"></div>
+    <div class="feedback" id="qFeedback" hidden>
+      <div class="fb-title" id="qFbTitle"></div>
+      <div class="fb-exp" id="qFbExp"></div>
+      <button class="btn big pink" id="qNext">ไปต่อ ▶</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== โมดัลวิธีเล่น ===== -->
+<div class="modal" id="howModal" hidden>
+  <div class="modal-card">
+    <button class="close-x" id="btnHowClose" aria-label="ปิด">✕</button>
+    <h2 style="color:#6c4fd6;margin-bottom:12px;font-size:28px">📖 วิธีเล่น</h2>
+    <ol class="how-list">
+      <li><b>1.</b> กรอกชื่อผู้เล่น 2–4 คน แล้วกดเริ่มเกม</li>
+      <li><b>2.</b> ผู้เล่นตามลำดับกดปุ่ม <b>ทอยลูกเต๋า</b></li>
+      <li><b>3.</b> ตอบคำถามสระเกินให้ถูกต้อง ถ้าตอบถูกจะได้เดินหน้าตามแต้มลูกเต๋า</li>
+      <li><b>4.</b> ถ้าตอบผิด ไม่ต้องกังวล ดูเฉลยแล้วให้คนถัดไปเล่น</li>
+      <li><b>5.</b> เดินไปเจอ <b>บันได 🪜</b> ให้ปีนขึ้นไปช่องปลายบันได</li>
+      <li><b>6.</b> เดินไปเจอ <b>งู 🐍</b> ให้เลื่อนลงไปช่องปลายหางงู</li>
+      <li><b>7.</b> คนแรกที่ถึงช่อง <b>100</b> คือผู้ชนะ 🏆</li>
+    </ol>
+  </div>
+</div>
+
+<div id="banner" class="banner"></div>
+<div id="toast"></div>
+<div id="fx"></div>
+
+<script>
+/* =====================================================================
+   บันไดงูมหาสนุก ตะลุยโลกสระเกิน
+   ไฟล์เดียว: HTML + CSS + JavaScript (Vanilla)
+   ===================================================================== */
+
+/* ---------- ค่าคงที่ของกระดาน ---------- */
+const SNAKES  = {98:78, 95:75, 93:73, 87:24, 64:60, 62:19, 56:53, 49:11, 47:26, 16:6};   // หัวงู -> หาง
+const LADDERS = {4:14, 9:31, 21:42, 28:84, 36:44, 51:67, 71:91, 80:100};              // ฐานบันได -> ปลาย
+const SNAKE_COLORS = ['#43a047','#e91e63','#ff9800','#7b1fa2'];
+const PLAYER_COLORS = ['#ff6b9d','#4fc3f7','#ffb300','#8e6cf0'];
+const AVATARS = ['🦊','🐰','🐻','🐸'];
+const OFFSETS = [[-2,-2],[2,-2],[-2,2],[2,2]];           // ตำแหน่งย่อยของตัวละครในช่องเดียวกัน
+const CELL_COLORS = ['#cdeeff','#ffdcec','#fff3b0','#e6dbff','#d6f5cf'];
+const LEVEL_NAMES = ['ง่าย','ปานกลาง','ท้าทาย'];
+const CHOICE_LABELS = ['ก.','ข.','ค.','ง.'];
+const PIPS = {1:[4],2:[0,8],3:[0,4,8],4:[0,2,6,8],5:[0,2,4,5,6,8].filter(i=>i!==5),6:[0,2,3,5,6,8]};
+
+/* ---------- คลังคำถาม ----------
+   รูปแบบ: [ระดับ(0ง่าย 1ปานกลาง 2ท้าทาย), คำถาม, [ตัวเลือก 4 ข้อ], ดัชนีคำตอบที่ถูก, คำอธิบาย] */
+const RAW_QUESTIONS = [
+  // ----- ระดับง่าย -----
+  [0,"ข้อใดเป็นรูปสระที่จัดเป็นสระเกินตามหลักการเรียนภาษาไทย",["ะ","า","ฤ","ิ"],2,"ฤ เป็นหนึ่งในสระเกิน 4 รูป ได้แก่ ฤ ฤๅ ฦ ฦๅ"],
+  [0,"คำว่า “ฤดู” มีรูปสระใด",["ฤ","เ-","ไ-","า"],0,"คำว่า ฤดู มีรูปสระ ฤ"],
+  [0,"ข้อใดมีรูปสระ ฤ",["มะลิ","กา","ฤดู","โต๊ะ"],2,"ฤดู มีรูปสระ ฤ ส่วนข้ออื่นใช้สระ ะ ิ า และ โ-ะ"],
+  [0,"ข้อใดเป็นรูปสระที่มี ย เป็นส่วนประกอบ",["เ-ีย","-า","-ุ","-ิ"],0,"รูป เ-ีย มีตัว ย อยู่ในรูปสระ ส่วนข้ออื่นไม่มีตัว ย"],
+  [0,"ข้อใดมีรูปสระ ฦ",["ฦๅ","กิน","นอน","ดู"],0,"ฦๅ มีรูป ฦ อยู่ในตัว ส่วนข้ออื่นไม่มีสระเกิน"],
+  [0,"คำว่า “กิน” มีสระอะไร",["ิ","า","ู","ะ"],0,"กิน มีสระ ิ อยู่ด้านบนของพยัญชนะ ก"],
+  [0,"คำว่า “กา” มีสระอะไร",["ะ","า","ุ","เ-"],1,"กา มีสระ า วางไว้หลังพยัญชนะ ก"],
+  [0,"คำว่า “ดู” มีสระอะไร",["ู","ิ","า","ั"],0,"ดู มีสระ ู อยู่ใต้พยัญชนะ ด"],
+  [0,"คำว่า “หมู” มีสระอะไร",["ู","ี","ื","ุ"],0,"หมู มีสระ ู อยู่ใต้พยัญชนะ ม"],
+  [0,"คำว่า “ไก่” มีสระอะไร",["ไ-","ใ-","เ-","-ะ"],0,"ไก่ ใช้สระ ไ- (ไม้มลาย) วางไว้หน้าพยัญชนะ"],
+  [0,"คำว่า “เสือ” มีสระอะไร",["เ-ือ","เ-ีย","-า","-ุ"],0,"เสือ ใช้สระ เ-ือ"],
+  [0,"คำว่า “เสีย” มีสระอะไร",["เ-ีย","เ-ือ","-า","-ิ"],0,"เสีย ใช้สระ เ-ีย"],
+  [0,"คำว่า “แมว” มีสระอะไร",["แ-","โ-","เ-","ใ-"],0,"แมว ใช้สระ แ- วางไว้หน้าพยัญชนะ"],
+  [0,"คำว่า “ใจ” มีสระอะไร",["ใ-","ไ-","เ-","-า"],0,"ใจ ใช้สระ ใ- (ไม้ม้วน)"],
+  [0,"รูปสระ “ุ” อยู่ตำแหน่งใดของพยัญชนะ",["ใต้พยัญชนะ","บนพยัญชนะ","หน้าพยัญชนะ","หลังพยัญชนะ"],0,"สระ ุ วางอยู่ใต้พยัญชนะ"],
+  [0,"รูปสระ “เ-” วางไว้ตำแหน่งใด",["หน้าพยัญชนะ","หลังพยัญชนะ","บนพยัญชนะ","ใต้พยัญชนะ"],0,"สระ เ- วางอยู่หน้าพยัญชนะ"],
+  [0,"เติมสระลงในช่องว่างให้ได้คำว่า “ข_” ที่หมายถึงอวัยวะสำหรับเดิน",["า","ิ","ู","ั"],0,"ข + า = ขา"],
+
+  // ----- ระดับปานกลาง -----
+  [1,"ข้อใดไม่ใช่สระเกิน",["ฤ","ฤๅ","ฦ","า"],3,"า เป็นสระที่ใช้ทั่วไป ส่วน ฤ ฤๅ ฦ เป็นสระเกิน"],
+  [1,"ข้อใดจัดเป็นสระเกินทั้งหมด",["ฤ ฤๅ ฦ ฦๅ","า ิ ุ ู","เ-ีย เ-ือ","ไ- ใ-"],0,"สระเกินคือ ฤ ฤๅ ฦ ฦๅ ส่วนข้ออื่นเป็นสระที่ใช้ทั่วไป"],
+  [1,"คำว่า “ฤๅษี” มีสระเกินรูปใด",["ฤ","ฤๅ","ฦ","ฦๅ"],1,"ฤๅษี ใช้สระ ฤๅ"],
+  [1,"คำว่า “ฤทธิ์” มีสระเกินรูปใด",["ฤ","ฦ","ฤๅ","ฦๅ"],0,"ฤทธิ์ ใช้สระ ฤ"],
+  [1,"ข้อใดมีรูปสระ “ฤๅ”",["ฤดู","ฤๅษี","ฤกษ์","ไก่"],1,"ฤๅษี มีสระ ฤๅ ส่วน ฤดู และ ฤกษ์ มีสระ ฤ"],
+  [1,"คำใดมีสระ “ั” (ไม้หันอากาศ)",["กัน","กิน","กุ้ง","กา"],0,"กัน มีสระ ั อยู่ด้านบนของพยัญชนะ ก"],
+  [1,"คำว่า “เกาะ” มีสระอะไร",["เ-าะ","เ-ีย","-ิ","-ุ"],0,"เกาะ ใช้สระ เ-าะ"],
+  [1,"คำว่า “เรือ” มีสระอะไร",["เ-ือ","เ-ีย","-า","ไ-"],0,"เรือ ใช้สระ เ-ือ"],
+  [1,"คำว่า “เปิด” มีสระอะไร",["เ-ิ","เ-ี","เ-ื","เ-็"],0,"เปิด ใช้สระ เ-ิ"],
+  [1,"คำว่า “โต๊ะ” มีสระอะไร",["โ-ะ","เ-อ","-ั","-ิ"],0,"โต๊ะ ใช้สระ โ-ะ"],
+  [1,"ข้อใดสะกดคำว่า “ฤทธิ์” ถูกต้อง",["ฤทธิ์","รทธิ์","รึทธิ์","ฤทธ"],0,"ฤทธิ์ เขียนด้วย ฤ ไม่ใช่ รึ หรือ รทธิ์"],
+  [1,"คำว่า “ไทย” มีสระอะไร",["ไ-","ใ-","-ย","เ-"],0,"ไทย ใช้สระ ไ-"],
+  [1,"รูปสระ “-า” วางไว้ตำแหน่งใด",["หลังพยัญชนะ","หน้าพยัญชนะ","บนพยัญชนะ","ใต้พยัญชนะ"],0,"สระ า วางอยู่หลังพยัญชนะ"],
+  [1,"ข้อใดมี ฤ อยู่กลางคำ",["ฤดู","กฤษณา","ฤกษ์","ฤทธิ์"],1,"กฤษณา มี ฤ อยู่กลางคำ ส่วนข้ออื่นขึ้นต้นด้วย ฤ"],
+  [1,"เติมสระลงในช่องว่างให้ได้คำว่า “ส_ย” ที่แปลว่าสิ่งที่ยาวและบาง",["า","ู","ั","ุ"],0,"ส + า + ย = สาย"],
+
+  // ----- ระดับท้าทาย -----
+  [2,"สระเกินทั้ง 4 รูปมีจำนวนเท่าใด (ตามตำราที่ใช้ทั่วไป)",["2","3","4","5"],2,"สระเกินทั้ง 4 รูป คือ ฤ ฤๅ ฦ ฦๅ"],
+  [2,"ในภาษาไทย สระเกินมักพบในคำที่รับมาจากภาษาใด",["บาลีและสันสกฤต","อังกฤษ","จีน","ญี่ปุ่น"],0,"สระเกินส่วนใหญ่พบในคำยืมจากภาษาบาลีและสันสกฤต"],
+  [2,"คำว่า “กฤษณา” มีสระเกินรูปใด",["ฤ","ฦ","ฤๅ","ฦๅ"],0,"กฤษณา มีสระ ฤ อยู่กลางคำ"],
+  [2,"ข้อใดสะกดคำว่า “ฤกษ์” ถูกต้อง",["ฤกษ์","รึกษ์","รกษ์","ฤกษ"],0,"ฤกษ์ สะกดด้วย ฤ และมีไม้ทัณฑฆาตกำกับ"],
+  [2,"ข้อใดไม่มีสระเกิน",["ฤดู","กฤษณา","กิน","ฤทธิ์"],2,"กิน ไม่มีสระเกิน ส่วนข้ออื่นมี ฤ"],
+  [2,"เติมสระลงในช่องว่างให้ได้คำว่า “ค_ว” ที่แปลว่าแถวที่รอคอย",["ิ","ู","ั","ุ"],0,"ค + ิ + ว = คิว"],
+  [2,"ข้อใดเป็นคำที่ไม่มีสระ “ั”",["กัน","กิน","ฝัน","มัน"],1,"กิน ไม่มีสระ ั ส่วนข้ออื่นมีสระ ั"],
+  [2,"ข้อใดเป็นการจับคู่ที่ถูกต้อง",["ฤ - ฤดู","ฦ - ฤดู","ฤๅ - กิน","ฦๅ - ดู"],0,"ฤ คู่กับคำว่า ฤดู"],
+  [2,"ข้อใดเป็นการจับคู่ที่ถูกต้อง",["ู - กิน","ิ - กิน","ั - กา","ุ - กา"],1,"ิ อยู่ในคำว่า กิน"],
+  [2,"ข้อใดเป็นการจับคู่ที่ถูกต้อง",["เ-ือ - เสือ","เ-ีย - เรือ","-า - กิน","โ-ะ - เสือ"],0,"เ-ือ อยู่ในคำว่า เสือ"]
+];
+
+/* ---------- ตัวช่วยทั่วไป ---------- */
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){
+    const j = Math.floor(Math.random()*(i+1));
+    [a[i],a[j]] = [a[j],a[i]];
+  }
+  return a;
+}
+const $ = id => document.getElementById(id);
+
+/* แปลงลำดับช่อง 1–100 เป็นตำแหน่ง col (0–9) และ row (0 คือแถวบนสุด)
+   แถวล่างสุดเริ่มจาก 1 ไปทางขวา แถวถัดไปเดินกลับทางซ้าย (แบบงู) */
+function cellPos(n){
+  const i = n-1;
+  const r = Math.floor(i/10);          // แถวนับจากล่าง (0 = ล่างสุด)
+  const c = i % 10;
+  const col = (r % 2 === 0) ? c : 9-c;
+  const row = 9 - r;                   // แปลงให้ 0 = บนสุด เพื่อใช้กับ CSS grid
+  return {col, row};
+}
+function center(n){
+  const {col,row} = cellPos(n);
+  return {x: col*10+5, y: row*10+5};
+}
+
+/* ---------- เสียง (Web Audio API) ---------- */
+let audioCtx = null;
+let soundOn = true;
+function tone(freq, dur=0.15, type='sine', vol=0.15, when=0){
+  if(!soundOn) return;
+  try{
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    const t0 = audioCtx.currentTime + when;
+    const o = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    o.type = type;
+    o.frequency.value = freq;
+    g.gain.setValueAtTime(vol, t0);
+    g.gain.exponentialRampToValueAtTime(0.001, t0+dur);
+    o.connect(g).connect(audioCtx.destination);
+    o.start(t0);
+    o.stop(t0+dur+0.02);
+  }catch(e){ /* ถ้าเบราว์เซอร์ไม่รองรับเสียงให้ข้ามไป */ }
+}
+const sfxDice  = () => { for(let i=0;i<6;i++) tone(300+i*60,0.08,'triangle',0.1,i*0.07); };
+const sfxGood  = () => { tone(523,0.12,'sine',0.15,0); tone(659,0.12,'sine',0.15,0.12); tone(784,0.25,'sine',0.15,0.24); };
+const sfxBad   = () => { tone(220,0.25,'sawtooth',0.07,0); tone(180,0.32,'sawtooth',0.07,0.2); };
+const sfxTick  = () => tone(700,0.05,'square',0.04);
+const sfxUp    = () => { [523,659,784,1046].forEach((f,i)=>tone(f,0.14,'triangle',0.15,i*0.1)); };
+const sfxDown  = () => { [784,622,523,392].forEach((f,i)=>tone(f,0.2,'sawtooth',0.07,i*0.14)); };
+const sfxWin   = () => { [523,587,659,698,784,880,988,1046].forEach((f,i)=>tone(f,0.25,'triangle',0.15,i*0.12)); };
+
+/* ---------- เอฟเฟกต์ภาพ ---------- */
+function confetti(){
+  const fx = $('fx');
+  const colors = ['#ff6b9d','#4fc3f7','#ffd54f','#8e6cf0','#66bb6a'];
+  for(let i=0;i<110;i++){
+    const c = document.createElement('i');
+    c.className = 'conf';
+    c.style.left = (Math.random()*100)+'vw';
+    c.style.background = colors[i%colors.length];
+    c.style.animationDelay = (Math.random()*1.5)+'s';
+    c.style.animationDuration = (2.5+Math.random()*2)+'s';
+    fx.appendChild(c);
+    setTimeout(()=>c.remove(), 6000);
+  }
+}
+function sparkle(){
+  const fx = $('fx');
+  for(let i=0;i<14;i++){
+    const s = document.createElement('span');
+    s.className = 'spark';
+    s.textContent = ['⭐','✨','🌟'][i%3];
+    s.style.left = (30+Math.random()*40)+'vw';
+    s.style.top = (25+Math.random()*40)+'vh';
+    s.style.animationDelay = (Math.random()*0.3)+'s';
+    fx.appendChild(s);
+    setTimeout(()=>s.remove(), 1400);
+  }
+}
+let toastTimer = null;
+function toast(msg){
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 1800);
+}
+let bannerTimer = null;
+function banner(msg, kind){
+  const b = $('banner');
+  b.textContent = msg;
+  b.className = 'banner show ' + (kind||'');
+  clearTimeout(bannerTimer);
+  bannerTimer = setTimeout(()=>{ b.classList.remove('show'); }, 1500);
+}
+
+/* ---------- การจัดการหน้าจอ ---------- */
+function showScreen(name){
+  document.querySelectorAll('.screen').forEach(s=>{
+    s.classList.toggle('active', s.id === 'screen-'+name);
+  });
+  window.scrollTo(0,0);
+}
+function updateSoundButtons(){
+  const label = soundOn ? '🔊 เสียง: เปิด' : '🔇 เสียง: ปิด';
+  $('btnSoundStart').textContent = label;
+  $('btnSoundGame').textContent = soundOn ? '🔊 เสียง' : '🔇 ปิดเสียง';
+}
+function toggleSound(){
+  soundOn = !soundOn;
+  updateSoundButtons();
+  if(soundOn) tone(660,0.1,'sine',0.12);
+}
+
+/* ---------- สถานะเกม ---------- */
+let state = null;       // ข้อมูลเกมปัจจุบัน
+let queue = [];         // คิวคำถามที่ยังไม่ได้ใช้
+let savedNames = ['ผู้เล่น 1','ผู้เล่น 2','ผู้เล่น 3'];
+let prevScreen = 'start';
+
+/* ใช้ข้อมูลดิบแปลงเป็นอ็อบเจกต์ */
+const QUESTIONS = RAW_QUESTIONS.map(([level,q,c,a,e])=>({level,q,c,a,e}));
+
+/* สุ่มคำถามแบบไม่ซ้ำ: เมื่อใช้ครบแล้วจึงสุ่มชุดใหม่ */
+function refillQueue(){
+  const pick = lv => shuffle(QUESTIONS.filter(x=>x.level===lv));
+  queue = [...pick(0), ...pick(1), ...pick(2)];
+}
+function nextQuestion(){
+  if(queue.length === 0) refillQueue();
+  return queue.shift();
+}
+
+function currentPlayer(){ return state.players[state.turn]; }
+
+/* ---------- สร้างกระดาน ---------- */
+function buildBoard(){
+  const b = $('board');
+  b.innerHTML = '';
+  for(let n=1;n<=100;n++){
+    const {col,row} = cellPos(n);
+    const d = document.createElement('div');
+    d.className = 'cell';
+    d.style.gridColumn = (col+1);
+    d.style.gridRow = (row+1);
+    d.style.background = CELL_COLORS[(row+col)%CELL_COLORS.length];
+    let html = `<span class="num">${n}</span>`;
+    if(n===1)   html += `<span class="tag">🚩</span>`;
+    if(n===100) html += `<span class="tag">🏁</span>`;
+    d.innerHTML = html;
+    b.appendChild(d);
+  }
+}
+
+/* วาดบันไดและงูด้วย SVG (ใช้พิกัด 0–100 ตรงกับกระดาน) */
+function drawLadder(a, b){
+  const dx = b.x-a.x, dy = b.y-a.y, len = Math.hypot(dx,dy);
+  const ux = dx/len, uy = dy/len;
+  const px = -uy*2.2, py = ux*2.2;   // ระยะห่างของรางบันได
+  let s = '';
+  s += `<line x1="${a.x+px}" y1="${a.y+py}" x2="${b.x+px}" y2="${b.y+py}" stroke="#8d5524" stroke-width="1.1" stroke-linecap="round" opacity=".9"/>`;
+  s += `<line x1="${a.x-px}" y1="${a.y-py}" x2="${b.x-px}" y2="${b.y-py}" stroke="#8d5524" stroke-width="1.1" stroke-linecap="round" opacity=".9"/>`;
+  for(let t=0.12; t<=0.9; t+=0.13){
+    const cx = a.x+dx*t, cy = a.y+dy*t;
+    s += `<line x1="${cx+px}" y1="${cy+py}" x2="${cx-px}" y2="${cy-py}" stroke="#d9a55b" stroke-width=".9" opacity=".95"/>`;
+  }
+  return s;
+}
+function drawSnake(h, t, color){
+  const dx = t.x-h.x, dy = t.y-h.y, len = Math.hypot(dx,dy);
+  const ux = dx/len, uy = dy/len;
+  const nx = -uy, ny = ux;
+  const N = 28;
+  let d = '';
+  for(let i=0;i<=N;i++){
+    const u = i/N;
+    const wave = Math.sin(u*Math.PI*4) * 3.2;
+    const x = h.x + dx*u + nx*wave;
+    const y = h.y + dy*u + ny*wave;
+    d += (i===0 ? 'M' : 'L') + x.toFixed(2) + ' ' + y.toFixed(2) + ' ';
+  }
+  let s = `<path d="${d}" fill="none" stroke="${color}" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" opacity=".95"/>`;
+  s += `<path d="${d}" fill="none" stroke="#fff" stroke-width=".7" stroke-linecap="round" stroke-dasharray="2 3" opacity=".6"/>`;
+  // หัวงู
+  s += `<circle cx="${h.x}" cy="${h.y}" r="2.9" fill="${color}"/>`;
+  s += `<circle cx="${h.x-1}" cy="${h.y-0.8}" r=".6" fill="#fff"/>`;
+  s += `<circle cx="${h.x+1}" cy="${h.y-0.8}" r=".6" fill="#fff"/>`;
+  s += `<circle cx="${t.x}" cy="${t.y}" r="1.4" fill="${color}" opacity=".8"/>`;
+  return s;
+}
+function drawOverlay(){
+  let html = '';
+  Object.entries(LADDERS).forEach(([from,to])=>{
+    html += drawLadder(center(+from), center(+to));
+  });
+  Object.entries(SNAKES).forEach(([head,tail],i)=>{
+    html += drawSnake(center(+head), center(+tail), SNAKE_COLORS[i%SNAKE_COLORS.length]);
+  });
+  $('overlay').innerHTML = html;
+}
+
+/* ---------- ตัวละครผู้เล่น ---------- */
+function buildTokens(){
+  const wrap = $('tokens');
+  wrap.innerHTML = '';
+  state.players.forEach((p,i)=>{
+    const t = document.createElement('div');
+    t.className = 'token';
+    t.style.background = p.color;
+    t.textContent = p.avatar;
+    t.title = p.name;
+    wrap.appendChild(t);
+    p.el = t;
+  });
+}
+function renderTokens(){
+  state.players.forEach((p,i)=>{
+    const {col,row} = cellPos(p.pos);
+    const [ox,oy] = OFFSETS[i];
+    p.el.style.left = (col*10 + 5 - 2.1 + ox) + '%';
+    p.el.style.top  = (row*10 + 5 - 2.1 + oy) + '%';
+  });
+}
+
+/* ---------- ลูกเต๋า ---------- */
+function setDice(v){
+  const d = $('dice');
+  d.innerHTML = '';
+  for(let i=0;i<9;i++){
+    const s = document.createElement('span');
+    s.className = 'pip' + (PIPS[v].includes(i) ? ' on' : '');
+    d.appendChild(s);
+  }
+}
+
+/* ---------- แสดงผลด้านข้าง ---------- */
+function renderSide(){
+  const list = $('scoreList');
+  list.innerHTML = '';
+  const order = state.players
+    .map((p,i)=>({p,i}))
+    .sort((a,b)=> b.p.pos-a.p.pos || b.p.score-a.p.score || a.i-b.i);
+  order.forEach((o,rank)=>{
+    const p = o.p;
+    const li = document.createElement('li');
+    li.className = 'score-item' + (!state.over && o.i===state.turn ? ' active' : '');
+    li.style.borderLeftColor = p.color;
+    li.innerHTML = `
+      <span class="rank">${rank+1}</span>
+      <span class="av">${p.avatar}</span>
+      <div><div class="nm"></div><div class="det">ช่อง ${p.pos} · ✅ ${p.right} · ❌ ${p.wrong}</div></div>
+      <span class="pts">⭐ ${p.score}</span>`;
+    li.querySelector('.nm').textContent = p.name;
+    list.appendChild(li);
+  });
+}
+function updateTurn(){
+  if(!state) return;
+  const p = currentPlayer();
+  $('turnName').textContent = `${p.avatar} ${p.name}`;
+  $('btnRoll').disabled = state.busy || state.over;
+  if(state.over){
+    $('turnHint').textContent = 'เกมจบแล้ว';
+  } else if(state.busy){
+    $('turnHint').textContent = 'กำลังดำเนินการ... รอสักครู่';
+  } else {
+    $('turnHint').textContent = `ถึงตาของ ${p.name} ทอยลูกเต๋าได้เลย`;
+  }
+}
+
+/* ---------- เริ่มเกม ---------- */
+function startGame(names){
+  state = {
+    players: names.map((name,i)=>({
+      name, color: PLAYER_COLORS[i], avatar: AVATARS[i],
+      pos: 1, score: 0, right: 0, wrong: 0, el: null
+    })),
+    turn: 0,
+    busy: false,
+    over: false,
+    cur: null,
+    dice: 1
+  };
+  savedNames = names.slice();
+  refillQueue();
+  buildTokens();
+  renderTokens();
+  setDice(1);
+  renderSide();
+  updateTurn();
+  showScreen('game');
+}
+
+/* ---------- ทอยลูกเต๋า ---------- */
+function onRoll(){
+  if(!state || state.busy || state.over) return;
+  state.busy = true;
+  updateTurn();
+  const finalValue = 1 + Math.floor(Math.random()*6);
+  sfxDice();
+  let k = 0;
+  const iv = setInterval(()=>{
+    setDice(1 + Math.floor(Math.random()*6));
+    k++;
+    if(k >= 10){
+      clearInterval(iv);
+      setDice(finalValue);
+      state.dice = finalValue;
+      setTimeout(()=>askQuestion(finalValue), 450);
+    }
+  }, 75);
+}
+
+/* ---------- คำถาม ---------- */
+const LABEL_TEXT = ['ก','ข','ค','ง'];
+function askQuestion(dice){
+  if(!state || state.over) return;
+  const p = currentPlayer();
+  const q = nextQuestion();
+  const order = shuffle([0,1,2,3]);
+  const choices = order.map(i=>({text:q.c[i], ok: i===q.a}));
+  state.cur = {q, dice, choices, answered:false};
+
+  const lv = $('qLevel');
+  lv.textContent = LEVEL_NAMES[q.level];
+  lv.className = 'badge l' + q.level;
+  $('qPlayer').textContent = `${p.avatar} ${p.name} ตอบเพื่อเดินหน้า ${dice} ช่อง`;
+  $('qText').textContent = q.q;
+
+  const box = $('qChoices');
+  box.innerHTML = '';
+  choices.forEach((c,idx)=>{
+    const b = document.createElement('button');
+    b.className = 'choice';
+    const lab = document.createElement('span');
+    lab.className = 'lab';
+    lab.textContent = CHOICE_LABELS[idx];
+    b.appendChild(lab);
+    b.appendChild(document.createTextNode(' ' + c.text));
+    b.addEventListener('click', ()=>chooseAnswer(idx));
+    box.appendChild(b);
+  });
+
+  $('qFeedback').hidden = true;
+  $('qModal').hidden = false;
+}
+
+function chooseAnswer(idx){
+  const cur = state.cur;
+  if(!cur || cur.answered) return;
+  cur.answered = true;
+  const p = currentPlayer();
+  const buttons = $('qChoices').querySelectorAll('button');
+  buttons.forEach((b,i)=>{
+    b.disabled = true;
+    if(cur.choices[i].ok) b.classList.add('right');
+  });
+  const picked = cur.choices[idx];
+  if(!picked.ok) buttons[idx].classList.add('wrong');
+
+  // หาป้ายและข้อความของคำตอบที่ถูก เพื่อใช้แสดงเฉลย
+  const correctIdx = cur.choices.findIndex(c=>c.ok);
+  const correctLabel = CHOICE_LABELS[correctIdx];
+  const correctText = cur.choices[correctIdx].text;
+
+  const title = $('qFbTitle');
+  const exp = $('qFbExp');
+  const next = $('qNext');
+
+  if(picked.ok){
+    p.score += 10;
+    p.right += 1;
+    sfxGood();
+    sparkle();
+    title.textContent = 'เก่งมาก! ถูกต้องแล้ว ⭐';
+    title.className = 'fb-title good';
+    exp.textContent = `เฉลย: ${correctLabel} ${correctText}\n${cur.q.e}\n\n+10 คะแนน`;
+    next.textContent = `🎲 เดินหน้า ${cur.dice} ช่อง`;
+    next.onclick = ()=>{
+      $('qModal').hidden = true;
+      movePlayer(p, cur.dice);
+    };
+  } else {
+    p.wrong += 1;
+    sfxBad();
+    title.textContent = 'ไม่เป็นไรนะ ลองเรียนรู้ไปด้วยกัน 💖';
+    title.className = 'fb-title bad';
+    exp.textContent = `เฉลย: ${correctLabel} ${correctText}\n${cur.q.e}\n\nรอบนี้ยังไม่เดินหน้า`;
+    next.textContent = 'ผู้เล่นคนถัดไป ▶';
+    next.onclick = ()=>{
+      $('qModal').hidden = true;
+      endTurn();
+    };
+  }
+  $('qFeedback').hidden = false;
+  renderSide();
+}
+
+/* ---------- เดินตัวละครทีละช่อง ---------- */
+function movePlayer(p, steps){
+  let left = steps;
+  const tick = ()=>{
+    if(left > 0 && p.pos < 100){
+      p.pos += 1;
+      left -= 1;
+      sfxTick();
+      renderTokens();
+      renderSide();
+      setTimeout(tick, 280);
+    } else {
+      setTimeout(()=>afterMove(p), 250);
+    }
+  };
+  tick();
+}
+
+/* ---------- ตรวจบันไดและงูหลังเดิน ---------- */
+function afterMove(p){
+  if(p.pos === 100){
+    return winGame(p);
+  }
+  const isLadder = LADDERS[p.pos] !== undefined;
+  const isSnake  = SNAKES[p.pos] !== undefined;
+  if(!isLadder && !isSnake){
+    return endTurn();
+  }
+  const from = p.pos;
+  const to = isLadder ? LADDERS[from] : SNAKES[from];
+  if(isLadder){
+    banner(`🪜 ขึ้นบันได! ${p.name} จากช่อง ${from} ไปช่อง ${to}`, 'up');
+    sfxUp();
+  } else {
+    banner(`🐍 ตกงู! ${p.name} จากช่อง ${from} ลงไปช่อง ${to}`, 'down');
+    sfxDown();
+  }
+  setTimeout(()=>{
+    p.pos = to;
+    renderTokens();
+    renderSide();
+    setTimeout(()=>{
+      if(p.pos === 100) winGame(p);
+      else endTurn();
+    }, 600);
+  }, 1300);
+}
+
+/* ---------- จบตาและสลับผู้เล่น ---------- */
+function endTurn(){
+  $('qModal').hidden = true;
+  state.cur = null;
+  state.busy = false;
+  state.turn = (state.turn + 1) % state.players.length;
+  renderSide();
+  updateTurn();
+}
+
+/* ---------- ชนะเกม ---------- */
+function winGame(p){
+  state.over = true;
+  state.busy = false;
+  state.cur = null;
+  $('qModal').hidden = true;
+  renderTokens();
+  renderSide();
+  updateTurn();
+  sfxWin();
+  confetti();
+  setTimeout(()=>{
+    $('winName').textContent = `🎉 ผู้ชนะคือ ${p.avatar} ${p.name} 🎉`;
+    const list = $('winList');
+    list.innerHTML = '';
+    state.players
+      .map((pl,i)=>({pl,i}))
+      .sort((a,b)=> b.pl.pos-a.pl.pos || b.pl.score-a.pl.score || a.i-b.i)
+      .forEach((o,rank)=>{
+        const pl = o.pl;
+        const li = document.createElement('li');
+        li.className = 'score-item';
+        li.style.borderLeftColor = pl.color;
+        li.innerHTML = `
+          <span class="rank">${rank+1}</span>
+          <span class="av">${pl.avatar}</span>
+          <div><div class="nm"></div><div class="det">ช่อง ${pl.pos} · ✅ ${pl.right} · ❌ ${pl.wrong}</div></div>
+          <span class="pts">⭐ ${pl.score}</span>`;
+        li.querySelector('.nm').textContent = pl.name;
+        list.appendChild(li);
+      });
+    showScreen('win');
+  }, 1600);
+}
+
+/* ---------- หน้าตั้งค่าผู้เล่น ---------- */
+let playerCount = 3;
+function renderNameInputs(){
+  const wrap = $('nameInputs');
+  // เก็บชื่อที่พิมพ์ไว้ก่อน แล้วค่อยสร้างช่องใหม่
+  const current = [...wrap.querySelectorAll('input')].map(i=>i.value);
+  current.forEach((v,i)=>{ if(v.trim()) savedNames[i] = v; });
+  wrap.innerHTML = '';
+  for(let i=0;i<playerCount;i++){
+    const f = document.createElement('div');
+    f.className = 'name-field';
+    f.innerHTML = `<span class="av" style="background:${PLAYER_COLORS[i]}">${AVATARS[i]}</span><input maxlength="12" placeholder="ชื่อผู้เล่น ${i+1}">`;
+    const input = f.querySelector('input');
+    input.value = savedNames[i] || `ผู้เล่น ${i+1}`;
+    wrap.appendChild(f);
+  }
+}
+function setPlayerCount(n){
+  playerCount = n;
+  document.querySelectorAll('.cnt').forEach(b=>{
+    b.classList.toggle('on', +b.dataset.n === n);
+  });
+  renderNameInputs();
+}
+function readNames(){
+  const vals = [...$('nameInputs').querySelectorAll('input')].map((inp,i)=>{
+    const v = inp.value.trim();
+    return v || `ผู้เล่น ${i+1}`;
+  });
+  return vals;
+}
+
+/* ---------- หน้าความรู้ ---------- */
+let knowFrom = 'start';
+function openKnowledge(from){
+  knowFrom = from;
+  const active = state && !state.over;
+  $('btnKnowBack').textContent = active ? '🎮 กลับไปเล่นเกม' : '🎮 ไปเล่นเกม';
+  showScreen('know');
+}
+function closeKnowledge(){
+  if(state && !state.over) showScreen('game');
+  else showScreen('setup');
+}
+
+/* ---------- โมดัลวิธีเล่น ---------- */
+function openHow(){ $('howModal').hidden = false; }
+function closeHow(){ $('howModal').hidden = true; }
+
+/* ---------- เริ่มเกมใหม่ ---------- */
+function resetToSetup(){
+  if(state && !state.over){
+    if(!confirm('ต้องการเริ่มเกมใหม่หรือไม่? ความคืบหน้าปัจจุบันจะหายไป')) return;
+  }
+  state = null;
+  $('qModal').hidden = true;
+  $('banner').classList.remove('show');
+  showScreen('setup');
+  renderNameInputs();
+}
+
+/* ---------- เชื่อมปุ่มทั้งหมด ---------- */
+function bindEvents(){
+  // หน้าแรก
+  $('btnPlay').addEventListener('click', ()=>{
+    if(!state || state.over){ setPlayerCount(playerCount); }
+    showScreen('setup');
+    renderNameInputs();
+  });
+  $('btnHowStart').addEventListener('click', openHow);
+  $('btnKnowStart').addEventListener('click', ()=>openKnowledge('start'));
+  $('btnSoundStart').addEventListener('click', toggleSound);
+
+  // ตั้งค่าผู้เล่น
+  document.querySelectorAll('.cnt').forEach(b=>{
+    b.addEventListener('click', ()=>setPlayerCount(+b.dataset.n));
+  });
+  $('btnSetupBack').addEventListener('click', ()=>showScreen('start'));
+  $('btnStart').addEventListener('click', ()=>{
+    const names = readNames();
+    startGame(names);
+  });
+
+  // หน้าความรู้
+  $('btnKnowBack').addEventListener('click', closeKnowledge);
+
+  // หน้าเกม
+  $('btnRoll').addEventListener('click', onRoll);
+  $('btnHowGame').addEventListener('click', openHow);
+  $('btnKnowGame').addEventListener('click', ()=>openKnowledge('game'));
+  $('btnSoundGame').addEventListener('click', toggleSound);
+  $('btnNewGame').addEventListener('click', resetToSetup);
+
+  // หน้าชนะ
+  $('btnPlayAgain').addEventListener('click', ()=>{
+    startGame(savedNames.slice(0, playerCount).map((n,i)=>n));
+  });
+  $('btnToStart').addEventListener('click', ()=>{
+    state = null;
+    showScreen('start');
+  });
+
+  // โมดัลวิธีเล่น
+  $('btnHowClose').addEventListener('click', closeHow);
+  $('howModal').addEventListener('click', e=>{ if(e.target.id === 'howModal') closeHow(); });
+}
+
+/* ---------- เริ่มต้นระบบ ---------- */
+function init(){
+  buildBoard();
+  drawOverlay();
+  setDice(1);
+  updateSoundButtons();
+  renderNameInputs();
+  bindEvents();
+}
+document.addEventListener('DOMContentLoaded', init);
+</script>
+</body>
+</html>
